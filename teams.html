@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>الفرق</title>
+  <link rel="stylesheet" href="./styles/main.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="site-header">
+    <div class="mainbar">
+      <div class="container flex between center">
+        <a href="./index.html" class="brand">
+          <img class="brand-logo" src="https://f.top4top.io/p_354656mq11.png" alt="ستارليغ" />
+          <div class="brand-title">
+            <span class="ar">بطولة ستارليغ</span>
+          </div>
+        </a>
+        <div class="flex center">
+          <nav class="main-nav">
+            <a class="nav-link" href="./index.html#home">الرئيسية</a>
+            <a class="nav-link" href="./teams.html">الفرق</a>
+            <a class="nav-link" href="./matches.html">المباريات</a>
+            <a class="nav-link" href="./results.html">النتائج</a>
+            <a class="nav-link" href="./standings.html">الترتيب</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-teams">
+    <div class="container">
+      <section class="section">
+        <div class="section-head">
+          <h1 class="section-title">الفرق</h1>
+        </div>
+        <div id="teams-grid" class="teams-grid"></div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-brand"><img src="https://f.top4top.io/p_354656mq11.png" alt="ستارليغ" height="56" /></div>
+      <div class="copy">© <span id="year"></span> ستارليغ</div>
+    </div>
+  </footer>
+
+  <!-- Firebase CDN (compat for namespaced API) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js"></script>
+  <!-- Firebase config -->
+  <script src="./js/config.js"></script>
+  <script src="./js/public.js"></script>
+  <script src="./js/header.js"></script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تأهيل لاعبين</title>
+  <link rel="stylesheet" href="./styles/main.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="mainbar">
+      <div class="container flex between center">
+        <a href="./index.html" class="brand">
+          <img class="brand-logo" src="https://f.top4top.io/p_354656mq11.png" alt="ستارليغ" />
+          <div class="brand-title">
+            <span class="ar">بطولة ستارليغ</span>
+            <span class="fr">CHAMPIONNAT STARLiGUE</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-qualify">
+    <div class="container">
+      <section class="section">
+        <div class="section-head">
+          <h1 class="section-title">تأهيل لاعبين</h1>
+          <div id="team-name" class="muted"></div>
+        </div>
+
+        <form id="qualify-form" class="form card padded">
+
+          <input type="hidden" id="team-id" />
+          <div class="grid-3">
+            <label class="field"><span>الاسم الكامل</span><input id="q-name" class="input" required placeholder="مثال: محمد أحمد" /></label>
+            <label class="field"><span>الفئة</span>
+              <select id="q-category" class="input" required>
+                <option value="U13">U13</option>
+                <option value="U15">U15</option>
+                <option value="U17">U17</option>
+                <option value="U20">U20</option>
+                <option value="Senior">سينيور</option>
+              </select>
+            </label>
+            <label class="field"><span>تاريخ الميلاد</span><input type="date" id="q-birth" class="input" required /></label>
+          </div>
+
+          <div class="grid-2">
+            <div class="photo-wrap">
+              <div class="photo-preview" id="q-photo-preview">📷</div>
+              <div>
+                <label class="field"><span>صورة اللاعب</span><input type="file" id="q-photo" class="input" accept="image/*" required /></label>
+                <div class="hint">يفضّل صورة مربعة، سيتم إنشاء معاينة تلقائياً.</div>
+              </div>
+            </div>
+            <label class="field">
+              <span>شهادة مدرسية أو شهادة السكن أو جواز السفر</span>
+              <input type="file" id="q-attach-document" class="input" accept="image/*,application/pdf" required />
+            </label>
+          </div>
+
+
+
+          <div class="actions">
+            <button type="submit" class="btn primary">إرسال</button>
+            <a class="btn" href="./teams.html">العودة للفرق</a>
+          </div>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer"><div class="container"><div class="footer-brand"><img src="https://f.top4top.io/p_354656mq11.png" alt="ستارليغ" height="56" /></div><div class="copy">© <span id="year"></span> FRMF</div></div></footer>
+
+  <!-- Firebase CDN (compat) --><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-database-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-storage-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js"></script><!-- Firebase config --><script src="./js/config.js"></script>
+  <script src="./js/qualify.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', ()=>{ const y=document.querySelector('#year'); if(y) y.textContent=new Date().getFullYear(); });
+  </script>
+</body>
+</html>

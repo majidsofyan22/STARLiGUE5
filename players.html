@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>قائمة اللاعبين</title>
+  <link rel="stylesheet" href="./styles/main.css" />
+  <style>
+    .players-grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap:14px}
+    .player-card{background:#fff; border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow); overflow:hidden}
+    .player-card .head{display:flex; gap:12px; padding:12px; align-items:center}
+    .player-card .avatar{width:64px; height:64px; border-radius:50%; background:#f1f5f9; overflow:hidden; display:grid; place-items:center}
+    .player-card .avatar img{width:100%; height:100%; object-fit:cover}
+    .player-card .meta{display:flex; flex-direction:column}
+    .player-card .name{font-weight:800}
+    .player-card .sub{color:var(--muted); font-size:12px}
+    .player-card .foot{background:#f8fafc; padding:10px 12px; border-top:1px solid var(--border);}
+    .player-card .foot .pwd-row{display:flex; justify-content:center; align-items:center; gap:8px}
+    .muted{color:var(--muted)}
+    .pwd{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; background:#f1f5f9; padding:2px 6px; border-radius:6px}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="mainbar">
+      <div class="container flex between center">
+        <a href="./index.html" class="brand">
+          <img class="brand-logo" src="https://f.top4top.io/p_354656mq11.png" alt="ستارليغ" />
+          <div class="brand-title">
+            <span class="ar">بطولة ستارليغ</span>
+          </div>
+        </a>
+        <div class="flex center">
+          <nav class="main-nav">
+            <a class="nav-link" href="./index.html#home">الرئيسية</a>
+            <a class="nav-link" href="./teams.html">الفرق</a>
+            <a class="nav-link" href="./matches.html">المباريات</a>
+            <a class="nav-link" href="./results.html">النتائج</a>
+            <a class="nav-link" href="./standings.html">الترتيب</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-players">
+    <div class="container">
+      <section class="section">
+        <div class="section-head">
+          <h1 class="section-title">اللاعبون المؤهلون</h1>
+        </div>
+        <div id="players-grid" class="players-grid"></div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer"><div class="container"><div class="footer-brand"><img src="https://f.top4top.io/p_354656mq11.png" alt="ستارليغ" height="56" /></div><div class="copy">© <span id="year"></span> ستارليغ</div></div></footer>
+
+  <!-- Firebase CDN --><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script><!-- Firebase config --><script src="./js/config.js"></script>
+  <script src="./js/players-public.js"></script>
+  <script src="./js/header.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', ()=>{ const y=document.querySelector('#year'); if(y) y.textContent=new Date().getFullYear(); });
+  </script>
+</body>
+</html>

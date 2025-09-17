@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>جدول الترتيب | ستارليغ</title>
+  <link rel="stylesheet" href="./styles/main.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="site-header">
+    <div class="mainbar">
+      <div class="container flex between center">
+        <a href="./index.html" class="brand">
+          <img class="brand-logo" src="https://f.top4top.io/p_354656mq11.png" alt="ستارليغ" />
+          <div class="brand-title">
+            <span class="ar">بطولة ستارليغ</span>
+          </div>
+        </a>
+        <div class="flex center">
+          <nav class="main-nav">
+            <a class="nav-link" href="./index.html#home">الرئيسية</a>
+            <a class="nav-link" href="./teams.html">الفرق</a>
+            <a class="nav-link" href="./matches.html">المباريات</a>
+            <a class="nav-link" href="./results.html">النتائج</a>
+            <a class="nav-link" href="./standings.html">الترتيب</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-standings">
+    <div class="container">
+      <section class="section">
+        <h2 class="section-title">نتائج سريعة</h2>
+        <div id="results-bar" class="results-bar" aria-live="polite"></div>
+      </section>
+      <section id="standings" class="section">
+        <div class="section-head">
+          <h2 class="section-title" data-i18n="sections.standings">جدول الترتيب</h2>
+        </div>
+        <div class="table-wrapper">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th data-i18n="standings.team">الفريق</th>
+                <th data-i18n="standings.p">لعب</th>
+                <th data-i18n="standings.w">ف</th>
+                <th data-i18n="standings.d">ت</th>
+                <th data-i18n="standings.l">خ</th>
+                <th data-i18n="standings.gf">له</th>
+                <th data-i18n="standings.ga">عليه</th>
+                <th data-i18n="standings.gd">الفرق</th>
+                <th data-i18n="standings.pts">النقاط</th>
+              </tr>
+            </thead>
+            <tbody id="standings-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer id="contact" class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="brand-logo sm" aria-hidden="true">★</div>
+          <div class="foot-title" data-i18n="footer.org">الجامعة الملكية المغربية لكرة القدم</div>
+          <div class="muted" data-i18n="footer.desc">الموقع الرسمي لأخبار وبرامج كرة القدم المغربية.</div>
+        </div>
+        <div>
+          <div class="foot-title" data-i18n="footer.contact">تواصل</div>
+          <div class="muted">contact@example.com</div>
+          <div class="muted">+212 5xx xx xx xx</div>
+        </div>
+        <div>
+          <div class="foot-title" data-i18n="footer.follow">تابعنا</div>
+          <div class="socials">
+            <a href="#" aria-label="Facebook" class="soc">f</a>
+            <a href="#" aria-label="X" class="soc">𝕏</a>
+            <a href="#" aria-label="Instagram" class="soc">◎</a>
+            <a href="#" aria-label="YouTube" class="soc">▶</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-brand"><img src="https://f.top4top.io/p_354656mq11.png" alt="ستارليغ" height="56" /></div>
+      <div class="copy">
+        © <span id="year"></span> ستارليغ. <span data-i18n="footer.rights">جميع الحقوق محفوظة.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Firebase CDN --><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script><!-- Firebase config --><script src="./js/config.js"></script>
+  <script src="./js/public.js"></script>
+  <script src="./js/header.js"></script>
+</body>
+</html>

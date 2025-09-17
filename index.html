@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>بطولة ستارليغ</title>
+  <link rel="stylesheet" href="./styles/main.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+</head>
+<body>
+  <!-- Header (consistent across pages) -->
+  <header class="site-header">
+    <div class="mainbar">
+      <div class="container flex between center">
+        <a href="./index.html" class="brand">
+          <img class="brand-logo" src="https://f.top4top.io/p_354656mq11.png" alt="ستارليغ" />
+          <div class="brand-title">
+            <span class="ar">بطولة ستارليغ</span>
+          </div>
+        </a>
+        <div class="flex center">
+          <nav class="main-nav">
+            <a class="nav-link" href="./index.html#home">الرئيسية</a>
+            <a class="nav-link" href="./teams.html">الفرق</a>
+            <a class="nav-link" href="./matches.html">المباريات</a>
+            <a class="nav-link" href="./results.html">النتائج</a>
+            <a class="nav-link" href="./standings.html">الترتيب</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="home" class="page-home">
+    <div class="container">
+      <!-- FRMF Gestion-like Hero (crossfade backgrounds) -->
+      <section class="hero" aria-label="Hero">
+        <div class="fgestion-hero">
+          <div class="fgestion-slides" id="hero-slides"></div>
+          <div class="hero-content container">
+            <h1 class="hero-title">منصّة ستارليغ</h1>
+            <p class="hero-sub">شريكك الرياضي لإدارة المنافسات</p>
+            <p class="hero-desc">اكتشف منصّة حديثة وبسيطة تساعدك في إدارة ناديك أو جمعيتك الرياضية بأدوات سهلة وفعّالة.</p>
+            <a class="btn-cta" href="./register.html">ابدأ الآن</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- News -->
+      <section id="news" class="section">
+        <div class="section-head">
+          <h2 class="section-title" data-i18n="sections.latest_news">آخر الأخبار</h2>
+          <a class="see-all" href="#" data-i18n="actions.see_all">عرض الكل</a>
+        </div>
+        <div id="news-grid" class="news-grid"></div>
+      </section>
+
+
+
+
+
+
+
+
+
+
+      <!-- Videos (below latest news) -->
+      <section id="videos" class="section">
+        <div class="section-head">
+          <h2 class="section-title">الفيديوهات</h2>
+        </div>
+        <div id="videos-grid" class="videos-grid"></div>
+      </section>
+
+      <!-- Partners -->
+      <section id="partners" class="section">
+        <div class="section-head">
+          <h2 class="section-title">شركاؤنا</h2>
+        </div>
+        <div id="partners-row" class="partners-row"></div>
+      </section>
+    </div>
+  </main>
+
+  <footer id="contact" class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="brand-logo sm" aria-hidden="true">★</div>
+          <div class="foot-title">الجامعة الملكية المغربية لكرة القدم</div>
+          <div class="muted">الموقع الرسمي لأخبار وبرامج كرة القدم المغربية.</div>
+        </div>
+        <div>
+          <div class="foot-title">تواصل</div>
+          <div class="muted">contact@frmf.ma</div>
+          <div class="muted">+212 5xx xx xx xx</div>
+        </div>
+        <div>
+          <div class="foot-title">تابعنا</div>
+          <div class="socials">
+            <a href="#" aria-label="Facebook" class="soc">f</a>
+            <a href="#" aria-label="X" class="soc">𝕏</a>
+            <a href="#" aria-label="Instagram" class="soc">◎</a>
+            <a href="#" aria-label="YouTube" class="soc">▶</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-brand"><img src="https://f.top4top.io/p_354656mq11.png" alt="ستارليغ" height="56" /></div>
+      <div class="copy">
+        © <span id="year"></span> ستارليغ. <span data-i18n="footer.rights">جميع الحقوق محفوظة.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Firebase CDN (compat for namespaced API) --><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-database-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-storage-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js"></script><!-- Firebase config --><script src="./js/config.js"></script>
+  <script src="./js/public.js"></script>
+  <script src="./js/header.js"></script>
+</body>
+</html>

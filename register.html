@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تسجيل الفريق | ستارليغ</title>
+  <link rel="stylesheet" href="./styles/main.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="site-header">
+    <div class="mainbar">
+      <div class="container flex between center">
+        <a href="./index.html" class="brand">
+          <img class="brand-logo" src="https://f.top4top.io/p_354656mq11.png" alt="ستارليغ" />
+          <div class="brand-title">
+            <span class="ar">بطولة ستارليغ</span>
+            <span class="fr">CHAMPIONNAT STARLiGUE</span>
+          </div>
+        </a>
+        <div class="lang-switch" style="margin-inline-start:12px">
+          <button id="lang-ar" class="lang-btn active">العربية</button>
+          <span class="sep">|</span>
+          <button id="lang-fr" class="lang-btn">Français</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="margin-top:24px">
+    <h1 style="margin-top:0">تسجيل الفريق</h1>
+    <div class="card" style="padding:16px">
+      <form id="register-form" class="form">
+        <label>اسم الفريق
+          <input name="team" required />
+        </label>
+        <label>المدينة
+          <input name="city" required />
+        </label>
+        <label>البريد الإلكتروني
+          <input type="email" name="email" required />
+        </label>
+        <label>الهاتف
+          <input name="phone" />
+        </label>
+        <button type="submit" class="btn-cta">إرسال</button>
+      </form>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-brand"><img src="https://f.top4top.io/p_354656mq11.png" alt="ستارليغ" height="56" /></div>
+      <div class="copy">© <span id="year"></span> ستارليغ.</div>
+    </div>
+  </footer>
+
+  <!-- Firebase CDN --><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script><!-- Firebase config --><script src="./js/config.js"></script>
+  <script src="./js/public.js"></script>
+  <script>
+    // Minimal page-specific init: reuse i18n + storage from public.js
+    document.addEventListener('DOMContentLoaded', function(){
+      const year = document.getElementById('year'); if(year) year.textContent = new Date().getFullYear();
+      const form = document.getElementById('register-form');
+      if(form){
+        form.addEventListener('submit', async function(e){
+          e.preventDefault();
+          const fd = new FormData(form);
+          const data = Object.fromEntries(fd.entries());
+          const item = { ...data, ts: Date.now(), status: 'pending' };
+          try{
+            // Local cache
+            const raw = localStorage.getItem('sl_registrations');
+            const arr = raw ? JSON.parse(raw) : [];
+            arr.push(item);
+            localStorage.setItem('sl_registrations', JSON.stringify(arr));
+            // Remote (if available)
+            if(window.dbGet && window.dbSet){
+              try{
+                const snap = await window.dbGet('registrations');
+                const existing = snap.exists()? (snap.val()||[]) : [];
+                existing.push(item);
+                await window.dbSet('registrations', existing);
+              }catch{}
+            }
+            alert('تم إرسال الطلب بنجاح');
+            form.reset();
+            window.location.href = './admin/index.html';
+          }catch(err){
+            alert('تعذر حفظ البيانات');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
