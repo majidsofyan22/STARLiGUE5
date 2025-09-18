@@ -7,6 +7,24 @@
   let submitting = false;
   let currentTeam = null;
 
+  // Load existing players (remote if available, else local)
+  async function loadExistingPlayers(){
+    if(hasFirebase){
+      try{
+        const snap = await withTimeout(window.dbGet('players'), 8000, 'load players');
+        if(snap.exists()){
+          const val = snap.val();
+          if(Array.isArray(val)) return val || [];
+          if(val && typeof val === 'object') return Object.values(val);
+        }
+      }catch{ /* ignore */ }
+    }
+    return storage.get(LOCAL_KEY, []);
+  }
+
+  // licenseNumber generation removed per requirements
+  // async function generateLicenseNumber(teamId) { /* removed */ }
+
   // Limits to avoid localStorage quota errors (~5MB per origin)
   const MAX_TOTAL_BYTES = Math.floor(4.5 * 1024 * 1024); // 4.5MB safety margin
   const MAX_PER_FILE_BYTES = 600 * 1024; // 600KB per attachment/photo after compression
@@ -116,14 +134,16 @@
 
     const attachDoc = await fileToDataUrl('#q-attach-document', { maxDim: 1000, quality: 0.66 });
 
+    const teamId = qs('#team-id')?.value || '';
+
     return {
       id: Math.random().toString(36).slice(2,9),
-      teamId: qs('#team-id')?.value || '',
+      teamId: teamId,
       club: currentTeam?.name || '',
       name: qs('#q-name').value.trim(),
       category: qs('#q-category').value,
       birth: qs('#q-birth').value,
-
+      // licenseNumber removed as per requirements
       photo: photoData || null,
       attachments: {
         document: attachDoc
@@ -134,6 +154,9 @@
   async function savePlayerRemoteSafe(list){ if(hasFirebase){ try{ await window.dbSet('players', list); }catch{} } }
 
   async function savePlayer(p){
+    // Ensure license number exists for any source before persisting
+    // licenseNumber removed; no generation needed
+    try{ delete p.licenseNumber; }catch{}
     // Upload media to Firebase Storage (if available), then persist to DB
     if(hasFirebase && window.uploadDataURL){
       try{
@@ -163,6 +186,10 @@
       // 1) Try push (works even if reads are disallowed)
       try{
         await withTimeout(window.dbPush('players', p), 8000, 'push player');
+        // Maintain license index for fast verify lookups
+        try{ await withTimeout(window.dbSet('licenseIndex/' + encodeURIComponent(String(p.licenseNumber||'')), p), 8000, 'index license'); }catch{}
+        // Local offline index (optional)
+        try{ const idx = JSON.parse(localStorage.getItem('sl_license_index')||'{}'); idx[String(p.licenseNumber||'')] = p; localStorage.setItem('sl_license_index', JSON.stringify(idx)); }catch{}
         return;
       }catch{ /* ignore and try array-mode */ }
       // 2) Fallback to array mode (read+set)
@@ -171,6 +198,9 @@
         const existing = snap.exists()? (snap.val()||[]) : [];
         existing.push(p);
         await withTimeout(savePlayerRemoteSafe(existing), 8000, 'save players');
+        // Also update license index path
+        try{ await withTimeout(window.dbSet('licenseIndex/' + encodeURIComponent(String(p.licenseNumber||'')), p), 8000, 'index license'); }catch{}
+        try{ const idx = JSON.parse(localStorage.getItem('sl_license_index')||'{}'); idx[String(p.licenseNumber||'')] = p; localStorage.setItem('sl_license_index', JSON.stringify(idx)); }catch{}
         return; // Firebase-only preferred
       }catch{ /* fall through to local cache as last resort */ }
     }
@@ -214,11 +244,20 @@
 
   async function init(){
     const { team } = parseQuery();
-    const t = team ? await getTeamById(team) : null;
+    let t = team ? await getTeamById(team) : null;
+
+    // دعم اختيار الفريق مسبقًا من الصفحة (مثلاً صفحة الأدمن)
+    if(!t){
+      const presetId = qs('#team-id')?.value || '';
+      if(presetId){
+        try { t = await getTeamById(presetId); } catch {}
+      }
+    }
+
     if(t){
       currentTeam = t; // keep team in memory to attach club automatically
-      qs('#team-id').value = t.id;
-      qs('#team-name').textContent = `الفريق: ${t.name}`;
+      const idEl = qs('#team-id'); if(idEl) idEl.value = t.id;
+      const nameEl = qs('#team-name'); if(nameEl) nameEl.textContent = `الفريق: ${t.name}`;
     }
 
     bindPhotoPreview();

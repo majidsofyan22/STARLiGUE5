@@ -15,6 +15,19 @@
     return [];
   }
 
+  async function rebuildLocalLicenseIndex(){
+    try{
+      const snap = await window.dbGet('players');
+      if(snap && snap.exists()){
+        const val = snap.val();
+        const list = Array.isArray(val) ? val : (val && typeof val === 'object' ? Object.values(val) : []);
+        const idx = {};
+        (list||[]).forEach(p=>{ if(p && p.licenseNumber) idx[String(p.licenseNumber)] = p; });
+        localStorage.setItem('sl_license_index', JSON.stringify(idx));
+      }
+    }catch{}
+  }
+
   async function render(){
     const grid = qs('#players-grid');
     if(!grid) return;
@@ -43,5 +56,5 @@
     });
   }
 
-  document.addEventListener('DOMContentLoaded', ()=>{ render(); });
+  document.addEventListener('DOMContentLoaded', ()=>{ render(); rebuildLocalLicenseIndex(); });
 })();

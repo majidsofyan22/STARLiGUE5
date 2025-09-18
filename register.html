@@ -29,67 +29,214 @@
     </div>
   </header>
 
-  <main class="container" style="margin-top:24px">
-    <h1 style="margin-top:0">تسجيل الفريق</h1>
-    <div class="card" style="padding:16px">
+  <main class="page-register" style="margin-top:0">
+    <div class="card padded" style="max-width:none; width:100%; margin:0; border-radius:0; box-shadow:none; border-left:0; border-right:0; padding:28px 20px">
+      <div class="form-head">
+        <h1 class="form-title" style="margin:0">تسجيل الفريق</h1>
+        <p class="form-subtitle muted" style="margin:6px 0 0; font-size:14px">سجّل فريقك الآن، وابدأ رحلتك نحو النجومية مع ستارليغ! ✨</p>
+      </div>
       <form id="register-form" class="form">
-        <label>اسم الفريق
-          <input name="team" required />
+        <div class="grid-2">
+          <label>اسم الفريق
+            <input name="team" required placeholder="مثال: نجوم الدار البيضاء" />
+          </label>
+          <label>المدينة
+            <input name="city" required placeholder="مثال: الدار البيضاء" />
+          </label>
+          <label>اسم مسؤول الفريق
+            <input name="managerName" required placeholder="الاسم الكامل" />
+          </label>
+          <label>رقم البطاقة الوطنية
+            <input name="nationalId" required inputmode="text" placeholder="AB123456" />
+          </label>
+          <label>البريد الإلكتروني
+            <input type="email" name="email" required placeholder="name@example.com" />
+          </label>
+          <label>الهاتف
+            <input name="phone" type="tel" inputmode="tel" placeholder="مثال: 0612 345 678" />
+          </label>
+        </div>
+        <label>رسالة تحفيزية
+          <textarea name="motivation" rows="5" placeholder="اكتب رسالة تحفيزية قصيرة عن فريقك، أهدافه وطموحاته"></textarea>
         </label>
-        <label>المدينة
-          <input name="city" required />
+        <label>شعار الفريق
+          <input type="file" name="teamLogo" accept="image/*" required />
         </label>
-        <label>البريد الإلكتروني
-          <input type="email" name="email" required />
-        </label>
-        <label>الهاتف
-          <input name="phone" />
-        </label>
-        <button type="submit" class="btn-cta">إرسال</button>
+        <div class="actions" style="justify-content:flex-end">
+          <button type="submit" class="btn primary">إرسال الطلب</button>
+        </div>
       </form>
     </div>
   </main>
 
-  <footer class="site-footer">
+  <footer class="site-footer" style="margin-top:0">
     <div class="container">
       <div class="footer-brand"><img src="https://f.top4top.io/p_354656mq11.png" alt="ستارليغ" height="56" /></div>
       <div class="copy">© <span id="year"></span> ستارليغ.</div>
     </div>
   </footer>
 
-  <!-- Firebase CDN --><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js"></script><!-- Firebase config --><script src="./js/config.js"></script>
+  <!-- Firebase CDN (compat) --><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-database-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-storage-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js"></script><!-- Firebase config --><script src="./js/config.js"></script>
   <script src="./js/public.js"></script>
   <script>
     // Minimal page-specific init: reuse i18n + storage from public.js
     document.addEventListener('DOMContentLoaded', function(){
       const year = document.getElementById('year'); if(year) year.textContent = new Date().getFullYear();
       const form = document.getElementById('register-form');
+      let isSubmitting = false; // prevent double submissions
       if(form){
         form.addEventListener('submit', async function(e){
           e.preventDefault();
-          const fd = new FormData(form);
-          const data = Object.fromEntries(fd.entries());
-          const item = { ...data, ts: Date.now(), status: 'pending' };
+          if(isSubmitting) return;
+          isSubmitting = true;
+
+          // Disable submit button during processing
+          const submitBtn = form.querySelector('button[type="submit"]');
+          const prevBtnText = submitBtn ? submitBtn.textContent : '';
+          if(submitBtn){ submitBtn.disabled = true; submitBtn.textContent = '... جاري الإرسال'; }
+
           try{
-            // Local cache
-            const raw = localStorage.getItem('sl_registrations');
-            const arr = raw ? JSON.parse(raw) : [];
-            arr.push(item);
-            localStorage.setItem('sl_registrations', JSON.stringify(arr));
-            // Remote (if available)
-            if(window.dbGet && window.dbSet){
-              try{
-                const snap = await window.dbGet('registrations');
-                const existing = snap.exists()? (snap.val()||[]) : [];
-                existing.push(item);
-                await window.dbSet('registrations', existing);
-              }catch{}
+            const fd = new FormData(form);
+            const data = Object.fromEntries(fd.entries());
+
+            // Handle optional team logo upload (fast like qualify page: compress + quick timeout)
+            function estimateDataUrlBytes(dataUrl){
+              if(!dataUrl || typeof dataUrl !== 'string') return 0;
+              const base64 = dataUrl.split(',')[1] || '';
+              const padding = (base64.match(/=+$/) || [''])[0].length;
+              return Math.floor(base64.length * 3 / 4 - padding);
             }
+            async function readFileAsDataURL(file){
+              return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+              });
+            }
+            async function imageFileToCompressedDataUrl(file, maxDim=680, quality=0.66){
+              return new Promise((resolve)=>{
+                const fr = new FileReader();
+                fr.onload = ()=>{
+                  const img = new Image();
+                  img.onload = ()=>{
+                    try{
+                      const {width, height} = img;
+                      const scale = Math.min(1, maxDim / Math.max(width, height));
+                      const w = Math.max(1, Math.round(width * scale));
+                      const h = Math.max(1, Math.round(height * scale));
+                      const canvas = document.createElement('canvas');
+                      canvas.width = w; canvas.height = h;
+                      const ctx = canvas.getContext('2d');
+                      ctx.drawImage(img, 0, 0, w, h);
+                      const out = canvas.toDataURL('image/jpeg', quality);
+                      resolve(out || fr.result);
+                    }catch{ resolve(fr.result); }
+                  };
+                  img.onerror = ()=> resolve(null);
+                  img.src = fr.result;
+                };
+                fr.onerror = ()=> resolve(null);
+                fr.readAsDataURL(file);
+              });
+            }
+            const withTimeoutUpload = (promise, ms = 6000) => new Promise((resolve, reject) => {
+              let settled = false;
+              const timer = setTimeout(() => { if(!settled){ settled = true; reject(new Error('timeout')); } }, ms);
+              promise.then((v) => { if(!settled){ settled = true; clearTimeout(timer); resolve(v); } })
+                     .catch((e) => { if(!settled){ settled = true; clearTimeout(timer); reject(e); } });
+            });
+
+            let logoUrl = '';
+            const file = fd.get('teamLogo');
+            if(file && typeof file === 'object' && file.size > 0){
+              try{
+                let dataUrl = null;
+                if(file.type && file.type.startsWith('image/')){
+                  dataUrl = await imageFileToCompressedDataUrl(file, 680, 0.66);
+                } else {
+                  dataUrl = await readFileAsDataURL(file);
+                }
+                if(dataUrl && estimateDataUrlBytes(dataUrl) > 600*1024){
+                  dataUrl = null; // drop if too large after compression
+                }
+                if(dataUrl){
+                  if(window.uploadDataURL){
+                    const safeName = String(file.name || 'logo.jpg').replace(/[^\w.\-]/g, '_');
+                    const path = `registrations/logos/${Date.now()}_${safeName}`;
+                    try{ logoUrl = await withTimeoutUpload(window.uploadDataURL(path, dataUrl, { contentType: 'image/jpeg' }), 6000); }
+                    catch{ logoUrl = dataUrl; }
+                  } else if(window.uploadFile){
+                    const safeName = String(file.name || 'logo.jpg').replace(/[^\w.\-]/g, '_');
+                    const path = `registrations/logos/${Date.now()}_${safeName}`;
+                    try{ logoUrl = await withTimeoutUpload(window.uploadFile(path, file, { contentType: file.type || 'image/*' }), 6000); }
+                    catch{ logoUrl = dataUrl; }
+                  } else {
+                    logoUrl = dataUrl;
+                  }
+                }
+              }catch(err){
+                try{ logoUrl = await readFileAsDataURL(file); }catch{}
+              }
+            }
+            // Remove the raw File from the data object
+            delete data.teamLogo;
+
+            const item = { ...data, logoUrl, ts: Date.now(), status: 'pending' };
+
+            // Local cache (robust: tolerate array or object)
+            let arr = [];
+            try{
+              const raw = localStorage.getItem('sl_registrations');
+              if(raw){
+                const parsed = JSON.parse(raw);
+                if(Array.isArray(parsed)) arr = parsed; else if(parsed && typeof parsed === 'object') arr = Object.values(parsed);
+              }
+            }catch{}
+            arr.push(item);
+            try{ localStorage.setItem('sl_registrations', JSON.stringify(arr)); }catch{}
+
+            // Remote (non-blocking with timeout to avoid hanging UI)
+            const withTimeout = (promise, ms = 6000) => new Promise((resolve, reject) => {
+              let settled = false;
+              const timer = setTimeout(() => { if(!settled){ settled = true; reject(new Error('timeout')); } }, ms);
+              promise.then((v) => { if(!settled){ settled = true; clearTimeout(timer); resolve(v); } })
+                     .catch((e) => { if(!settled){ settled = true; clearTimeout(timer); reject(e); } });
+            });
+            try{
+              if(typeof window.dbPush === 'function'){
+                // fire-and-forget (won't block form submission)
+                withTimeout(window.dbPush('registrations', item)).catch(()=>{});
+              } else if(window.dbGet && window.dbSet){
+                (async () => {
+                  try{
+                    const snap = await withTimeout(window.dbGet('registrations'));
+                    const existing = snap.exists()? (snap.val()||[]) : [];
+                    if(Array.isArray(existing)){
+                      existing.push(item);
+                      await withTimeout(window.dbSet('registrations', existing));
+                    } else if(existing && typeof existing === 'object'){
+                      // Convert object to array for write-back compatibility
+                      const list = Object.values(existing);
+                      list.push(item);
+                      await withTimeout(window.dbSet('registrations', list));
+                    } else {
+                      await withTimeout(window.dbSet('registrations', [item]));
+                    }
+                  }catch(e){}
+                })();
+              }
+            }catch{}
+
             alert('تم إرسال الطلب بنجاح');
+            try{ sessionStorage.setItem('lastRegTs', String(item.ts)); }catch{}
             form.reset();
-            window.location.href = './admin/index.html';
+            window.location.href = './index.html';
           }catch(err){
             alert('تعذر حفظ البيانات');
+          } finally {
+            if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = prevBtnText; }
+            isSubmitting = false;
           }
         });
       }
