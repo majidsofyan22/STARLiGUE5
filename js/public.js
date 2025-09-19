@@ -82,7 +82,19 @@
         window.dbOnValue('matches', (snap)=>{ if(snap.exists()){ db.matches = normalizeMatchesFromRemote(snap.val()); renderFixtures(); renderStandings(); } });
         window.dbOnValue('slides', (snap)=>{ if(snap.exists()){ db.slides = snap.val(); renderSlider(); renderMedia(); } });
         window.dbOnValue('videos', (snap)=>{ if(snap.exists()){ db.videos = snap.val(); renderVideos(); } });
-        window.dbOnValue('news', (snap)=>{ if(snap.exists()){ db.news = snap.val(); renderNews(); } });
+        window.dbOnValue('news', (snap)=>{
+          if(snap.exists()){
+            const oldCount = (db.news || []).length;
+            db.news = snap.val() || [];
+            const newCount = db.news.length;
+            console.log(`تم تحديث الأخبار تلقائياً: ${oldCount} → ${newCount} خبر`);
+            renderNews();
+          } else {
+            db.news = [];
+            console.log('تم مسح جميع الأخبار');
+            renderNews();
+          }
+        });
         window.dbOnValue('partners', (snap)=>{ if(snap.exists()){ db.partners = snap.val(); renderPartners(); } });
         window.dbOnValue('site', (snap)=>{ if(snap.exists()){ db.site = snap.val(); applySiteBrand(); } });
         window.dbOnValue('slider_settings', (snap)=>{ if(snap.exists()){ db.sliderSettings = snap.val() || db.sliderSettings; renderSlider(); } });
@@ -179,14 +191,38 @@
   function renderNews(){
     const grid = qs('#news-grid'); if(!grid) return;
     grid.innerHTML = db.news.map(n => `
-      <article class="card">
-        <span class="thumb">${n.image? `<img src="${n.image}" alt="">`: ''}</span>
+      <article class="card news-card" data-news-id="${n.id}">
+        <span class="thumb clickable-thumb" data-news-id="${n.id}">${n.image? `<img src="${n.image}" alt="" data-news-id="${n.id}">`: ''}</span>
         <div class="content">
           <h3 class="title">${n.title}</h3>
           <div class="meta">${n.date||''}</div>
+          <div class="news-preview">
+            ${n.details ? (n.details.length > 100 ? n.details.substring(0, 100) + '...' : n.details) : ''}
+          </div>
         </div>
       </article>
     `).join('');
+
+    // Add click handlers for news images and cards
+    qsa('.news-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        const newsId = card.getAttribute('data-news-id');
+        if (newsId) {
+          window.location.href = `./news-detail.html?id=${encodeURIComponent(newsId)}`;
+        }
+      });
+    });
+
+    // Make images specifically clickable
+    qsa('.clickable-thumb img').forEach(img => {
+      img.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent card click from firing too
+        const newsId = img.getAttribute('data-news-id');
+        if (newsId) {
+          window.location.href = `./news-detail.html?id=${encodeURIComponent(newsId)}`;
+        }
+      });
+    });
   }
 
   // ---- Teams/Matches/Standings ----
@@ -337,7 +373,12 @@
     (db.videos||[]).forEach(v=>{
       const it = document.createElement('div');
       it.className = 'video-item';
-      it.innerHTML = v.embed || '';
+      it.innerHTML = `
+        <div class="video-container">
+          ${v.embed || ''}
+        </div>
+        ${v.title ? `<div class="video-title">${v.title}</div>` : ''}
+      `;
       cont.appendChild(it);
     });
   }

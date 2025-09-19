@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>بطولة ستارليغ</title>
+  <title>تفاصيل الخبر - بطولة ستارليغ</title>
   <link rel="stylesheet" href="./styles/main.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-
 </head>
 <body>
   <!-- Header (consistent across pages) -->
@@ -34,58 +33,19 @@
     </div>
   </header>
 
-  <main id="home" class="page-home">
+  <main class="page-news-detail">
     <div class="container">
-      <!-- FRMF Gestion-like Hero (crossfade backgrounds) -->
-      <section class="hero" aria-label="Hero">
-        <div class="fgestion-hero">
-          <div class="fgestion-slides" id="hero-slides"></div>
-          <div class="hero-content container">
-            <h1 class="hero-title">منصّة ستارليغ</h1>
-            <p class="hero-sub">شريكك الرياضي لإدارة المنافسات</p>
-            <p class="hero-desc">اكتشف منصّة حديثة وبسيطة تساعدك في إدارة ناديك أو جمعيتك الرياضية بأدوات سهلة وفعّالة.</p>
-            <a class="btn-cta" href="./register.html">سجل فريقك الان</a>
-          </div>
-        </div>
-      </section>
+      <div class="back-link">
+        <a href="./index.html#news" class="btn-back">← العودة للأخبار</a>
+      </div>
 
-      <!-- News -->
-      <section id="news" class="section">
-        <div class="section-head">
-          <h2 class="section-title" data-i18n="sections.latest_news">آخر الأخبار</h2>
-          <a class="see-all" href="#" data-i18n="actions.see_all">عرض الكل</a>
-        </div>
-        <div id="news-grid" class="news-grid"></div>
-      </section>
-
-
-
-
-
-
-
-
-
-
-      <!-- Videos (below latest news) -->
-      <section id="videos" class="section">
-        <div class="section-head">
-          <h2 class="section-title">فيديو</h2>
-        </div>
-        <div id="videos-grid" class="videos-grid"></div>
-      </section>
-
-      <!-- Partners -->
-      <section id="partners" class="section">
-        <div class="section-head">
-          <h2 class="section-title">شركاؤنا</h2>
-        </div>
-        <div id="partners-row" class="partners-row"></div>
-      </section>
+      <article class="news-detail-card" id="news-detail">
+        <!-- Content will be populated by JavaScript -->
+      </article>
     </div>
   </main>
 
-  <footer id="contact" class="site-footer">
+  <footer class="site-footer">
     <div class="container">
       <div class="footer-grid">
         <div>
@@ -110,13 +70,13 @@
       </div>
       <div class="footer-brand"><img src="https://f.top4top.io/p_354656mq11.png" alt="ستارليغ" height="56" /></div>
       <div class="copy">
-        © <span id="year"></span> ستارليغ. <span data-i18n="footer.rights">جميع الحقوق محفوظة.</span>
+        © <span id="year"></span> ستارليغ. جميع الحقوق محفوظة.
       </div>
     </div>
   </footer>
 
   <!-- Firebase CDN (compat for namespaced API) --><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-database-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-storage-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js"></script><!-- Firebase config --><script src="./js/config.js"></script>
-  <script src="./js/public.js"></script>
+  <script src="./js/news-detail.js"></script>
   <script src="./js/header.js"></script>
 </body>
 </html>
